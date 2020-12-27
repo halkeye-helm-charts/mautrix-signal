@@ -1,0 +1,17 @@
+apiVersion: v2
+type: application
+appVersion: latest
+description: A Matrix-Signal puppeting bridge.
+name: mautrix-signal
+version: 0.0.1
+keywords:
+  - synapse
+  - chat
+  - matrix
+  - signal
+home: https://github.com/tulir/mautrix-signal
+sources:
+  - https://github.com/matrix-org/synapse
+maintainers:
+  - name: Gavin Mogan
+    email: helm@gavinmogan.com
