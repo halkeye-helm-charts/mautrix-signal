@@ -3,7 +3,7 @@ type: application
 appVersion: latest
 description: A Matrix-Signal puppeting bridge.
 name: mautrix-signal
-version: 0.0.1
+version: 0.0.2
 keywords:
   - synapse
   - chat
