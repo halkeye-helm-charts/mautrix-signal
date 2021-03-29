@@ -8,10 +8,10 @@ image:
   mautrixSignal:
     repository: dock.mau.dev/tulir/mautrix-signal
     tag: "{{ .Chart.AppVersion }}"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   signald:
     repository: docker.io/finn/signald
-    tag: 0-12-0
+    tag: 0-13-0
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
