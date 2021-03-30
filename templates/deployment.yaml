@@ -59,6 +59,7 @@ spec:
             - |-
               set -ex
               cp /config/*.yaml /data/
+              mkdir -p "{{.Values.config.signal.outgoing_attachment_dir }}"
               #chown {{.Values.uid}}:{{.Values.gid}} -R /data
           volumeMounts:
             - name: data

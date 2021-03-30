@@ -122,7 +122,7 @@ config:
       # Directory for temp files when sending files to Signal. This should be an
       # absolute path that signald can read. For attachments in the other direction,
       # make sure signald is configured to use an absolute path as the data directory.
-      outgoing_attachment_dir: /tmp
+      outgoing_attachment_dir: /data/tmp/outgoing_attachment_dir
       # Directory where signald stores avatars for groups.
       avatar_dir: /signald/avatars
       # Whether or not message attachments should be removed from disk after they're bridged.
