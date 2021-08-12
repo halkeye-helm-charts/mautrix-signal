@@ -11,7 +11,7 @@ image:
     pullPolicy: Always
   signald:
     repository: docker.io/finn/signald
-    tag: 0-13-0
+    tag: 0-14-1
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []

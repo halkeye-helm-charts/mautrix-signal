@@ -3,7 +3,7 @@ type: application
 appVersion: latest
 description: A Matrix-Signal puppeting bridge.
 name: mautrix-signal
-version: 0.0.5
+version: 0.0.6
 keywords:
   - synapse
   - chat
@@ -23,4 +23,4 @@ annotations:
     - name: mautrix-signal
       image: dock.mau.dev/tulir/mautrix-signal:latest
     - name: signald
-      image: finn/signald:0-13-0
+      image: finn/signald:0-14-1
