@@ -120,7 +120,8 @@ spec:
               containerPort: {{ required "need config.appservice.port" .Values.config.appservice.port }}
               protocol: TCP
           env:
-            []
+            - { name: SIGNALD_ENABLE_METRICS, value: "true" }
+            - { name: SIGNALD_METRICS_PORT, value: "9595" }
           volumeMounts:
             - name: data
               mountPath: /data
