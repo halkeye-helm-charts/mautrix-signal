@@ -3,7 +3,7 @@ type: application
 appVersion: latest
 description: A Matrix-Signal puppeting bridge.
 name: mautrix-signal
-version: 0.0.7
+version: 0.0.8
 keywords:
   - synapse
   - chat
@@ -17,11 +17,10 @@ maintainers:
     email: helm@gavinmogan.com
 annotations:
   artifacthub.io/changes: |
-    - "Migrate to new signald app/image"
-    - "Enable signald's metrics"
-  artifacthub.io/containsSecurityUpdates: "false"
+    - "Latest signald (which should fix log4shell)"
+  artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/images: |
     - name: mautrix-signal
       image: dock.mau.dev/mautrix/signal:latest
     - name: signald
-      image: signald/signald:amd64-4d18e1e3a816e98a304f522ae393cde565638273
+      image: signald/signald:amd64-7354fec1d4233224e6827869f64d95ea06981205

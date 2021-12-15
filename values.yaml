@@ -11,7 +11,7 @@ image:
     pullPolicy: Always
   signald:
     repository: signald/signald
-    tag: amd64-4d18e1e3a816e98a304f522ae393cde565638273
+    tag: amd64-7354fec1d4233224e6827869f64d95ea06981205
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
