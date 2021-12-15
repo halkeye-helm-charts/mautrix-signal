@@ -60,12 +60,11 @@ spec:
               set -ex
               cp /config/*.yaml /data/
               mkdir -p "{{.Values.config.signal.outgoing_attachment_dir }}"
-              #chown {{.Values.uid}}:{{.Values.gid}} -R /data
           volumeMounts:
-            - name: data
-              mountPath: /data
             - name: config
               mountPath: /config
+            - name: data
+              mountPath: /data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       containers:
@@ -102,12 +101,12 @@ spec:
             periodSeconds: {{ .Values.probes.startup.periodSeconds }}
 {{- end }}
           volumeMounts:
-            - name: data
-              mountPath: /data
             - name: config
               mountPath: /config
             - name: signald
               mountPath: /signald
+            - name: data
+              mountPath: /data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: signald
@@ -115,16 +114,23 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.signald.repository }}:{{ tpl .Values.image.signald.tag . }}"
           imagePullPolicy: {{ .Values.image.signald.pullPolicy }}
+          command: ['/usr/local/bin/signald']
+          args:
+            # user socket
+            - -s
+            - "/signald/signald.sock"
+            # where data is stored
+            - -d
+            - "/signald"
+            # enable metrics
+            - -m
+            # metrics port
+            - --metrics-http-port=9595
           ports:
             - name: http
               containerPort: {{ required "need config.appservice.port" .Values.config.appservice.port }}
               protocol: TCP
-          env:
-            - { name: SIGNALD_ENABLE_METRICS, value: "true" }
-            - { name: SIGNALD_METRICS_PORT, value: "9595" }
           volumeMounts:
-            - name: data
-              mountPath: /data
             - name: config
               mountPath: /config
             - name: signald
