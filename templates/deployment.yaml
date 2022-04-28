@@ -49,8 +49,6 @@ spec:
       {{- end }}
       initContainers:
         - name: init
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.mautrixSignal.repository }}:{{ tpl .Values.image.mautrixSignal.tag . }}"
           imagePullPolicy: {{ .Values.image.mautrixSignal.pullPolicy }}
           command: ["/bin/sh"]
@@ -60,11 +58,15 @@ spec:
               set -ex
               cp /config/*.yaml /data/
               mkdir -p "{{.Values.config.signal.outgoing_attachment_dir }}"
+              chown -R 1337:1337 /signald
+              chown -R 1337:1337 /data
           volumeMounts:
             - name: config
               mountPath: /config
             - name: data
               mountPath: /data
+            - name: signald
+              mountPath: /signald
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       containers:
@@ -114,7 +116,6 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.signald.repository }}:{{ tpl .Values.image.signald.tag . }}"
           imagePullPolicy: {{ .Values.image.signald.pullPolicy }}
-          command: ['/usr/local/bin/signald']
           args:
             # user socket
             - -s
