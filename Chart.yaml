@@ -23,4 +23,4 @@ annotations:
     - name: mautrix-signal
       image: "dock.mau.dev/mautrix/signal:latest"
     - name: signald
-      image: "signald/signald:0.23.0"
+      image: "signald/signald:0.23.2"
