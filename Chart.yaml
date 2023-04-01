@@ -1,9 +1,9 @@
 apiVersion: v2
-type: application
-appVersion: latest
+appVersion: "latest"
 description: A Matrix-Signal puppeting bridge.
 name: mautrix-signal
-version: 0.1.1
+version: "0.1.1"
+type: application
 keywords:
   - synapse
   - chat
@@ -18,9 +18,9 @@ maintainers:
 annotations:
   artifacthub.io/changes: |
     - update to latest signald
-  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/images: |
     - name: mautrix-signal
-      image: dock.mau.dev/mautrix/signal:latest
+      image: "dock.mau.dev/mautrix/signal:latest"
     - name: signald
-      image: signald/signald:0.23.0
+      image: "signald/signald:0.23.0"
