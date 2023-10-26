@@ -6,12 +6,15 @@ replicaCount: 1
 
 image:
   mautrixSignal:
-    repository: dock.mau.dev/mautrix/signal
-    tag: "{{ .Chart.AppVersion }}"
-    pullPolicy: Always
+    registry: dock.mau.dev
+    repository: mautrix/signal
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    pullPolicy: IfNotPresent
   signald:
+    registry: docker.io
     repository: signald/signald
-    tag: 0.23.0
+    tag: 0.23.2
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -388,6 +391,7 @@ tolerations: []
 affinity: {}
 
 podAnnotations: {}
+podLabels: {}
 
 deploymentAnnotations: {}
 

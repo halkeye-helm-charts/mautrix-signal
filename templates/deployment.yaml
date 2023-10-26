@@ -5,23 +5,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "mautrix-signal.fullname" . }}
-  {{- if .Values.deploymentAnnotations }}
+  {{- with .Values.deploymentAnnotations }}
   annotations:
-    {{- range $key, $value := .Values.deploymentAnnotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-{{ include "mautrix-signal.labels" . | indent 4 }}
+    {{- include "mautrix-signal.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-{{- if .Values.strategy }}
+  {{- if .Values.strategy }}
   strategy:
-{{ toYaml .Values.strategy | indent 4 }}
-{{ if eq .Values.strategy.type "Recreate" }}
+    {{- toYaml .Values.strategy | nindent 4 }}
+    {{- if eq .Values.strategy.type "Recreate" }}
     rollingUpdate: null
-{{- end }}
-{{- end }}
+    {{- end }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "mautrix-signal.selectorLabels" . | nindent 6 }}
@@ -29,27 +27,28 @@ spec:
     metadata:
       labels:
         {{- include "mautrix-signal.selectorLabels" . | nindent 8 }}
-      {{- if $podAnnotations }}
-      annotations:
-        {{- range $key, $value := $podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with $podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ template "mautrix-signal.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if .Values.dnsConfig }}
+      {{- with .Values.dnsConfig }}
       dnsConfig:
-        {{- toYaml .Values.dnsConfig | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
         - name: init
-          image: "{{ .Values.image.mautrixSignal.repository }}:{{ tpl .Values.image.mautrixSignal.tag . }}"
+          image: "{{ .Values.image.mautrixSignal.registry }}/{{ .Values.image.mautrixSignal.repository }}:{{ .Values.image.mautrixSignal.tag | default (printf "v%s" .Chart.AppVersion) }}"
           imagePullPolicy: {{ .Values.image.mautrixSignal.pullPolicy }}
           command: ["/bin/sh"]
           args:
@@ -73,35 +72,39 @@ spec:
         - name: mautrix-signal
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.mautrixSignal.repository }}:{{ tpl .Values.image.mautrixSignal.tag . }}"
+          image: "{{ .Values.image.mautrixSignal.registry }}/{{ .Values.image.mautrixSignal.repository }}:{{ .Values.image.mautrixSignal.tag | default (printf "v%s" .Chart.AppVersion) }}"
           imagePullPolicy: {{ .Values.image.mautrixSignal.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ required "need config.appservice.port" .Values.config.appservice.port }}
               protocol: TCP
-          env:
-            []
+          {{- with .Values.probes.liveness }}
           livenessProbe:
             httpGet:
               path: /_matrix/mau/live
               port: http
-            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
-            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- with .Values.probes.readiness }}
           readinessProbe:
             httpGet:
               path: /_matrix/mau/live
               port: http
-            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
-            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
-{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- with .Values.probes.startup }}
           startupProbe:
             httpGet:
               path: /_matrix/mau/live
               port: http
-            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds }}
-            failureThreshold: {{ .Values.probes.startup.failureThreshold }}
-            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
-{{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- end }}
           volumeMounts:
             - name: config
               mountPath: /config
@@ -114,7 +117,7 @@ spec:
         - name: signald
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.signald.repository }}:{{ tpl .Values.image.signald.tag . }}"
+          image: "{{ .Values.image.signald.registry }}/{{ .Values.image.signald.repository }}:{{ .Values.image.signald.tag }}"
           imagePullPolicy: {{ .Values.image.signald.pullPolicy }}
           args:
             # user socket
@@ -155,11 +158,11 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
