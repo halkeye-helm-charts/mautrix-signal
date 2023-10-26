@@ -412,3 +412,8 @@ persistence:
   size: 1Gi
   ## persistence.skipuninstall -- Do not delete the pvc upon helm uninstall
   skipuninstall: false
+
+prometheus:
+  servicemonitor:
+    enabled: false
+    labels: {}
