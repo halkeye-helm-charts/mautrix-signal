@@ -78,6 +78,11 @@ spec:
             - name: http
               containerPort: {{ required "need config.appservice.port" .Values.config.appservice.port }}
               protocol: TCP
+            {{- if .Values.config.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.config.metrics.listen_port }}
+              protocol: TCP
+            {{- end }}
           {{- with .Values.probes.liveness }}
           livenessProbe:
             httpGet:

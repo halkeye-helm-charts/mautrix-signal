@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 0.4.3
 description: A Matrix-Signal puppeting bridge.
 name: mautrix-signal
-version: 0.2.1
+version: 0.3.0
 type: application
 keywords:
   - synapse
